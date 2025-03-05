@@ -1,5 +1,6 @@
 package com.global.hr.controllers;
 
+import com.global.hr.config.jwt.JwtUtil;
 import com.global.hr.models.*;
 import com.global.hr.models.DTO.*;
 import com.global.hr.repositories.UserRepository;
@@ -10,6 +11,7 @@ import com.global.hr.services.UserService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -17,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +44,13 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ForgetPasswordService forgetPasswordService;
-
+    
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> register(
             @RequestParam("fullName") String fullName,
@@ -46,11 +58,11 @@ public class AuthController {
             @RequestParam("password") String password,
             @RequestParam("role") String role,
             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture,
-            @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
-            @RequestParam(value = "dateOfBirth", required = false) LocalDate dateOfBirth,
-            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "phoneNumber") String phoneNumber,
+            @RequestParam(value = "dateOfBirth") LocalDate dateOfBirth,
+            @RequestParam(value = "description") String description,
             @RequestParam(value = "professionalTitle", required = false) String professionalTitle,
-            @RequestParam(value = "expertsInterests", required = false) List<String> expertsInterests,
+            @RequestParam(value = "expertsInterests") List<String> expertsInterests,
             @RequestParam(value = "personalLinks", required = false) List<String> personalLinks) {
 
         RegisterDTO registerDTO = new RegisterDTO();
@@ -84,15 +96,14 @@ public class AuthController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginDTO loginDTO) {
-    	try {
-    		
-            User user = userService.loginUser(loginDTO);
-            ProfileResponse response = new ProfileResponse(user);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-        }
-    		}
+    	 String token = jwtUtil.generateToken(loginDTO.getEmail()); 
+         System.out.print(token);
+    	Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+        
+       
+        return ResponseEntity.ok(Map.of("token", token)); // إعادة التوكن في شكل JSON
+    }
     
     
     
