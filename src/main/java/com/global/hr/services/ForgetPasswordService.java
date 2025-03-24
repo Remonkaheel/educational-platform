@@ -16,6 +16,7 @@ public class ForgetPasswordService {
     // تخزين OTP لكل مستخدم مع وقت انتهاء الصلاحية
     private Map<String, OtpDetails> otpStorage = new HashMap<>();
 
+    private static final int MAX_ATTEMPTS = 3;
     // إرسال OTP إلى البريد
     public void sendOTP(String email) {
         String otp = generateOTP();
@@ -27,12 +28,15 @@ public class ForgetPasswordService {
 
     // التحقق من صحة OTP وانتهاء صلاحيته
     public boolean verifyOTP(String email, String otp) {
-        if (!otpStorage.containsKey(email)) {
-            return false; // لا يوجد OTP لهذا البريد
-        }
-
         OtpDetails details = otpStorage.get(email);
 
+        if (details == null) {
+            return false; // لا يوجد OTP لهذا البريد
+        }
+        if (details.getAttempts() >= MAX_ATTEMPTS) {
+            otpStorage.remove(email);
+            return false;
+        }
         if (LocalDateTime.now().isAfter(details.getExpiryTime())) {
             otpStorage.remove(email); // حذف OTP من التخزين بعد انتهاء صلاحيته
             return false; // انتهت صلاحية الـ OTP
@@ -41,9 +45,14 @@ public class ForgetPasswordService {
         if (details.getOtp().equals(otp)) {
             otpStorage.remove(email); // حذف OTP بعد الاستخدام
             return true;
+        }else {
+            details.incrementAttempts(); // زيادة عدد المحاولات
+            if (details.getAttempts() >= MAX_ATTEMPTS) {
+                otpStorage.remove(email);
+                return false;
+            }
+            return false;
         }
-
-        return false; // OTP غير صحيح
     }
 
     // إنشاء OTP عشوائي من 5 أرقام
@@ -57,7 +66,7 @@ public class ForgetPasswordService {
     private static class OtpDetails {
         private String otp;
         private LocalDateTime expiryTime;
-
+        private int attempts; // عدد المحاولات الفاشلة
         public OtpDetails(String otp, LocalDateTime expiryTime) {
             this.otp = otp;
             this.expiryTime = expiryTime;
@@ -69,6 +78,13 @@ public class ForgetPasswordService {
 
         public LocalDateTime getExpiryTime() {
             return expiryTime;
+        }
+        public int getAttempts() {
+            return attempts;
+        }
+
+        public void incrementAttempts() {
+            this.attempts++;
         }
     }
 }
