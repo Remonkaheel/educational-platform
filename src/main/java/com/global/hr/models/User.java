@@ -6,9 +6,10 @@ import java.util.List;
 
 import jakarta.persistence.*;
 @Entity
-@Table(name = "app_users") // تجنب استخدام "user" (كلمة محجوزة في MySQL)
+@Table(name = "app_users") 
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
@@ -24,13 +25,17 @@ public abstract class User {
     private LocalDate dateOfBirth;
     @Column(length = 500)
     private String description;
-    @ElementCollection
-    @CollectionTable(name = "experts_interests", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "value")
-    private List<String> expertsInterests = new ArrayList<>(); 
+    @ManyToMany
+    @JoinTable(
+        name = "user_experts_interests",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> expertsInterests;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<CourseProgress> courseProgresses = new ArrayList<>();
-    // Getters and Setters (لتعامل الكود مع البيانات)
+   
+   
     private String otp;
     private LocalDateTime otpExpiry;
     
@@ -109,11 +114,11 @@ public abstract class User {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<String> getExpertsInterests() {
+	public List<Category> getExpertsInterests() {
         return expertsInterests;
     }
 
-    public void setExpertsInterests(List<String> expertsInterests) {
+    public void setExpertsInterests(List<Category> expertsInterests) {
         this.expertsInterests = expertsInterests;
     }
 

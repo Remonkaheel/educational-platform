@@ -15,7 +15,7 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class FileStorageService {
 
-    private final Path rootLocation = Paths.get("uploads");
+    private final Path rootLocation = Paths.get("src/main/resources/static/images/");
 
     public String storeFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {

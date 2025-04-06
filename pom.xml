@@ -74,7 +74,12 @@
         <version>0.11.5</version>
         <scope>runtime</scope>
     </dependency>
-
+<!-- Swagger UI -->
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version> <!-- أو أحدث إصدار -->
+</dependency>
     <!-- Java 17+ Compatibility -->
     <dependency>
         <groupId>jakarta.xml.bind</groupId>

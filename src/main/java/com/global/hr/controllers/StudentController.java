@@ -9,14 +9,5 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/students")
 public class StudentController {
 
-    private final StudentService studentService;
-
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
-
-    @GetMapping("/dashboard/{studentId}")
-    public ResponseEntity<DashboardResponse> getStudentDashboard(@PathVariable Long studentId) {
-        return ResponseEntity.ok(studentService.getDashboardData(studentId));
-    }
+   
 }

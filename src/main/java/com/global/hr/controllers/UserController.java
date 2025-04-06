@@ -24,6 +24,7 @@ public class UserController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return new ProfileResponse(user);
+        String token="fuck";
+		return new ProfileResponse(user,token);
     }
 }

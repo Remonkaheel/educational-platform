@@ -8,6 +8,7 @@ import com.global.hr.services.EmailService;
 import com.global.hr.services.ForgetPasswordService;
 import com.global.hr.services.UserService;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,25 +64,15 @@ public class AuthController {
             @RequestParam(value = "description") String description,
             @RequestParam(value = "professionalTitle", required = false) String professionalTitle,
             @RequestParam(value = "expertsInterests") List<String> expertsInterests,
-            @RequestParam(value = "personalLinks", required = false) List<String> personalLinks) {
+            @RequestParam(value = "personalLinks", required = false) List<String> personalLinks) throws IOException {
 
-        RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setFullName(fullName);
-        registerDTO.setEmail(email);
-        registerDTO.setPassword(password);
-        registerDTO.setRole(role);
-        registerDTO.setProfilePicture(profilePicture);
-        registerDTO.setPhoneNumber(phoneNumber);
-        registerDTO.setDateOfBirth(dateOfBirth);
-        registerDTO.setDescription(description);
-        registerDTO.setProfessionalTitle(professionalTitle);
-        registerDTO.setExpertsInterests(expertsInterests);
-        registerDTO.setPersonalLinks(personalLinks);
+    	 RegisterDTO registerDTO = new RegisterDTO(fullName, email, password, role, profilePicture, phoneNumber,
+    	            dateOfBirth, description, professionalTitle, expertsInterests, personalLinks);
 
         User result = userService.registerUser(registerDTO);
 
-        if ("Email is already registered.".equals(result)) {
-            return ResponseEntity.badRequest().body(result);
+        if (result == null) {
+            return ResponseEntity.badRequest().body("Email is already registered.");
         }
 
         User savedUser = userService.getUserByEmail(registerDTO.getEmail());
@@ -89,21 +80,25 @@ public class AuthController {
         if (savedUser == null) {
             return ResponseEntity.internalServerError().body("Registration failed.");
         }
+        String token = jwtUtil.generateToken(email);
 
-        ProfileResponse response = new ProfileResponse(savedUser);
+        ProfileResponse response = new ProfileResponse(result, token);
         return ResponseEntity.ok(response);
     
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@Validated @RequestBody LoginDTO loginDTO) {
-    	 String token = jwtUtil.generateToken(loginDTO.getEmail()); 
-         System.out.print(token);
     	Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-        
-       
-        return ResponseEntity.ok(Map.of("token", token)); // إعادة التوكن في شكل JSON
-    }
+    	  User user = userService.getUserByEmail(loginDTO.getEmail());
+    	    if (user == null) {
+    	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+    	    }
+    	    String token = jwtUtil.generateToken(user.getEmail());
+    	    ProfileResponse response = new ProfileResponse(user, token);
+
+    	    return ResponseEntity.ok(response);
+    	}
     
     
     

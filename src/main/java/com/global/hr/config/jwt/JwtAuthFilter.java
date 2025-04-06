@@ -25,10 +25,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-    	if (request.getRequestURI().startsWith("/api/auth/")) {
-            chain.doFilter(request, response);
-            return;
-        }
+    	  if (shouldNotFilter(request)) {
+              chain.doFilter(request, response);
+              return;
+          }
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -45,6 +46,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/auth/") || 
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/v3/api-docs") ||
+               path.startsWith("/swagger-resources") ||
+               path.startsWith("/webjars") ||
+               path.startsWith("/images/") ||
+               path.startsWith("/videos/") 
+
+ ;
     }
 }
 

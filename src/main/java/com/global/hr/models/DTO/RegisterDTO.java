@@ -6,19 +6,37 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public class RegisterDTO {
-
     private String fullName;
     private String email;
     private String password;
-    private String role;  // STUDENT or INSTRUCTOR
+    private String role;
+    private MultipartFile profilePicture;
     private String phoneNumber;
-    private MultipartFile profilePicture; 
     private LocalDate dateOfBirth;
     private String description;
-
     private String professionalTitle;
-    private List<String> expertsinterests;
+    private List<String> expertsInterests;
     private List<String> personalLinks;
+
+    public RegisterDTO(String fullName, String email, String password, String role, MultipartFile profilePicture,
+                       String phoneNumber, LocalDate dateOfBirth, String description, String professionalTitle,
+                       List<String> expertsInterests, List<String> personalLinks) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.profilePicture = profilePicture;
+        this.phoneNumber = phoneNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.description = description;
+        this.professionalTitle = professionalTitle;
+        this.expertsInterests = expertsInterests;
+        this.personalLinks = personalLinks;
+    }
+
+    // Getters & Setters
+
+
 
     // Getters and Setters
     public String getFullName() {
@@ -98,13 +116,7 @@ public class RegisterDTO {
 	}
 
 
-	public List<String> getExpertsInterests() {
-		return expertsinterests;
-	}
-
-	public void setExpertsInterests(List<String> expertsinterests) {
-		this.expertsinterests = expertsinterests;
-	}
+	
 
 	public MultipartFile getProfilePicture() {
 		return profilePicture;
@@ -112,5 +124,13 @@ public class RegisterDTO {
 
 	public void setProfilePicture(MultipartFile profilePicture) {
 		this.profilePicture = profilePicture;
+	}
+
+	public List<String> getExpertsInterests() {
+		return expertsInterests;
+	}
+
+	public void setExpertsInterests(List<String> expertsInterests) {
+		this.expertsInterests = expertsInterests;
 	}
 }

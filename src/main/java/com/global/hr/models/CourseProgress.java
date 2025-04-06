@@ -16,7 +16,7 @@ public class CourseProgress {
     
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private Courses course;
+    private Course course;
     
     private LocalDate date;
     private int hoursSpent;
@@ -32,10 +32,10 @@ public class CourseProgress {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public Courses getCourse() {
+	public Course getCourse() {
 		return course;
 	}
-	public void setCourse(Courses course) {
+	public void setCourse(Course course) {
 		this.course = course;
 	}
 	public LocalDate getDate() {
