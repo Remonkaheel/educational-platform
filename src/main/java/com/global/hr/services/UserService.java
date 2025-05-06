@@ -58,13 +58,13 @@ public class UserService {
         
         if (registerDTO.getRole().equalsIgnoreCase("INSTRUCTOR")) {
             Instructor instructor = new Instructor();
-            instructor.setRole(Role.INSTRUCTOR);
+            instructor.setRole("INSTRUCTOR");
             instructor.setProfessionalTitle(registerDTO.getProfessionalTitle());
             instructor.setPersonalLinks(registerDTO.getPersonalLinks());
             user = instructorRepository.save(instructor);
         } else {
             Student student = new Student();
-            student.setRole(Role.STUDENT);
+            student.setRole("STUDENT");
             user = studentRepository.save(student);
         }
 

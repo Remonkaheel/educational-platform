@@ -18,8 +18,7 @@ public class User {
     private String email;
     private String password;
     
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String role;
     private String phoneNumber;  // اختياري
     private String profilePicture;  // اختياري، رابط للصورة
     private LocalDate dateOfBirth;
@@ -76,14 +75,6 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -128,6 +119,12 @@ public class User {
 
 	public void setCourseProgresses(List<CourseProgress> courseProgresses) {
 		this.courseProgresses = courseProgresses;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 
     }

@@ -2,6 +2,7 @@ package com.global.hr.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +30,9 @@ public class Student extends User {
 
     // Getters & Setters
 	
-	public List<Course> getCourses() {
-		return courses;
-	}
+    public List<Course> getCourses() {
+        return this.courses != null ? this.courses : Collections.emptyList();
+    }
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
 	}

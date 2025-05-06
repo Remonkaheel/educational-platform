@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.global.hr.models.Category;
 import com.global.hr.models.Course;
 import com.global.hr.models.Instructor;
-import com.global.hr.models.Role;
 import com.global.hr.models.Student;
 import com.global.hr.models.User;
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,11 +23,12 @@ public class ProfileResponse {
     private String email;
     private String phoneNumber;
     private String profilePictureUrl;
-    private Role role;
+    private String role;
     private String description;
     private LocalDate dateOfBirth;
     private List<Map<String,Object>> expertsInterests;
-    private List<Course> courses;
+    private List<Map<String, Object>> courses;
+;
     private String token;
     // Instructor-specific fields
     private String professionalTitle;
@@ -69,17 +69,33 @@ public class ProfileResponse {
             this.profilePictureUrl = null; // لو مفيش صورة، يرجّع `null` أو صورة افتراضية
         }
     
-    if (user.getRole() == Role.INSTRUCTOR) {
+      if ("INSTRUCTOR".equals(user.getRole())) {
         Instructor instructor = (Instructor) user;
         this.professionalTitle = instructor.getProfessionalTitle();
         this.personalLinks = instructor.getPersonalLinks();
         this.totalStudents = Integer.valueOf(instructor.getTotalStudents());
         this.revenuePoints = instructor.getRevenuePoints();
-        this.courses = instructor.getCourses();
-    } else if (user.getRole() == Role.STUDENT) {
+        this.courses = instructor.getCourses().stream()
+        	    .map(course -> {
+        	        Map<String, Object> map = new HashMap<>();
+        	        map.put("id", course.getId());
+        	        map.put("courseName", course.getCourseName());
+        	        return map;
+        	    })
+        	    .collect(Collectors.toList());
+
+    } else if (user.getRole() == "STUDENT") {
         Student student = (Student) user;
         this.activityPoints = student.getActivityPoints();
-        this.courses = student.getCourses();
+        this.courses = student.getCourses().stream()
+        	    .map(course -> {
+        	        Map<String, Object> map = new HashMap<>();
+        	        map.put("id", course.getId());
+        	        map.put("courseName", course.getCourseName());
+        	        return map;
+        	    })
+        	    .collect(Collectors.toList());
+
     }// الكورسات اللي الطالب مسجل فيها
     }
 
@@ -87,7 +103,7 @@ public class ProfileResponse {
     //public Long getUserId() { return id; }
     public String getFullName() { return fullName; }
     public String getEmail() { return email; }
-    public Role getRole() { return role; }
+    public String getRole() { return role; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getProfilePictureUrl() { return profilePictureUrl; }
     public LocalDate getDateOfBirth() { return dateOfBirth; }
@@ -107,14 +123,6 @@ public class ProfileResponse {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public List<Course> getCourses() {
-		return courses;
-	}
-
-	public void setCourses(List<Course> courses) {
-		this.courses = courses;
 	}
 
 	public Integer getTotalStudents() {
@@ -169,7 +177,7 @@ public class ProfileResponse {
 		this.email = email;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 
@@ -197,6 +205,14 @@ public class ProfileResponse {
 
 	public void setExpertsInterests(List<Map<String, Object>> expertsInterests) {
 		this.expertsInterests = expertsInterests;
+	}
+
+	public List<Map<String, Object>> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<Map<String, Object>> courses) {
+		this.courses = courses;
 	}
 
 	

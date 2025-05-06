@@ -1,6 +1,7 @@
 package com.global.hr.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,10 @@ public class Instructor extends User {
     }
 
 	public List<Course> getCourses() {
+		
+		if (courses==null){
+			return new ArrayList <> ();
+		}
 		return courses;
 	}
 

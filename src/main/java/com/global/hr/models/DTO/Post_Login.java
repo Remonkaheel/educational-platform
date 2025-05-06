@@ -1,14 +1,14 @@
 package com.global.hr.models.DTO;
 
-import com.global.hr.models.Role;
+
 
 public class Post_Login {
 
     private Long id;
-    private Role role; // Use Role enum directly
+    private String role; // Use Role enum directly
 
     // Constructor
-    public Post_Login(Long id, Role role) {
+    public Post_Login(Long id, String role) {
         this.id = id;
         this.role = role;
     }
@@ -22,11 +22,11 @@ public class Post_Login {
         this.id = id;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }
