@@ -66,7 +66,7 @@ public class ProfileResponse {
         if (user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
             this.profilePictureUrl = BASE_IMAGE_URL + user.getProfilePicture();
         } else {
-            this.profilePictureUrl = null; // لو مفيش صورة، يرجّع `null` أو صورة افتراضية
+            this.profilePictureUrl = null; // If there is no image, return `null` or a default image
         }
     
       if ("INSTRUCTOR".equals(user.getRole())) {
@@ -96,7 +96,7 @@ public class ProfileResponse {
         	    })
         	    .collect(Collectors.toList());
 
-    }// الكورسات اللي الطالب مسجل فيها
+    }// The courses the student is enrolled in
     }
 
     // Getters

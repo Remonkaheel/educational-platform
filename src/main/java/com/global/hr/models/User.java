@@ -19,8 +19,8 @@ public class User {
     private String password;
     
     private String role;
-    private String phoneNumber;  // اختياري
-    private String profilePicture;  // اختياري، رابط للصورة
+    private String phoneNumber;  // Optional
+    private String profilePicture;  // Optional, URL to the image
     private LocalDate dateOfBirth;
     @Column(length = 500)
     private String description;

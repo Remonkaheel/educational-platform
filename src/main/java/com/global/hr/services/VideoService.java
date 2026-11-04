@@ -29,27 +29,27 @@ public class VideoService {
     private String uploadDir;
 
     public Video uploadVideo(MultipartFile file, String title, String description, Long courseId) throws IOException {
-        // التحقق من وجود الكورس
+        // Verify that the course exists
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + courseId));
 
-        // إنشاء مجلد التخزين إذا لم يكن موجوداً
+        // Create the storage folder if it does not exist
         File directory = new File(uploadDir);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // إنشاء اسم فريد للملف
+        // Create a unique filename
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
         
-        // حفظ الملف على السيرفر
+        // Save the file on the server
         String filePath = uploadDir + File.separator + uniqueFilename;
         Path path = Paths.get(filePath);
         Files.write(path, file.getBytes());
 
-        // إنشاء وحفظ معلومات الفيديو في قاعدة البيانات
+        // Create and save the video information in the database
         Video video = new Video();
         video.setTitle(title);
         video.setDescription(description);
@@ -57,7 +57,7 @@ public class VideoService {
         video.setCourse(course);
         video.setVideoUrl("/api/videos/stream/" + uniqueFilename);
         video.setVideoThumbnailUrl("/api/videos/thumbnail/" + uniqueFilename);
-        video.setRating(0.0); // تعيين تقييم مبدئي
+        video.setRating(0.0); // Set an initial rating
 
         return videoRepository.save(video);
     }
@@ -72,20 +72,20 @@ public class VideoService {
                 .orElseThrow(() -> new IllegalArgumentException("Video not found with id: " + id));
     }
 
-    // خدمة للحصول على معلومات الفيديو (الحجم والمدة)
+    // Method to get video information (size and duration)
     public VideoInfo getVideoInfo(Long id) throws IOException {
         Video video = getVideoById(id);
         File videoFile = new File(video.getFilePath());
         
         VideoInfo info = new VideoInfo();
         info.setSize(videoFile.length());
-        // تحتاج مكتبة مثل mp4parser للحصول على مدة الفيديو
+        // Requires a library such as mp4parser to get the video duration
         // info.setDuration(getVideoDuration(videoFile));
         
         return info;
     }
 
-    // كلاس لتخزين معلومات الفيديو
+    // Class to store video information
     public static class VideoInfo {
         private long size;
         private long duration;
@@ -141,7 +141,7 @@ public class VideoService {
 //    @Autowired
 //    private VideoRepository videoRepository;
 //    @Autowired
-//    private CourseRepository courseRepository; // لجلب الكورس قبل ربط الفيديو به
+//    private CourseRepository courseRepository; // To fetch the course before linking the video to it
 //
 //    private static final String UPLOAD_DIR = "src/main/resources/static/videos";
 //
@@ -156,18 +156,18 @@ public class VideoService {
 //    	 Course course = courseRepository.findById(courseId)
 //    	            .orElseThrow(() -> new RuntimeException("Course not found"));
 //    	if (!file.isEmpty()) {
-//            // إنشاء مجلد التحميل إذا لم يكن موجودًا
+//            // Create the upload folder if it does not exist
 //            Path uploadPath = (Path) Paths.get(UPLOAD_DIR);
 //            if (!Files.exists(uploadPath)) {
 //                Files.createDirectories(uploadPath);
 //            }
 //
-//            // حفظ الملف في المجلد
+//            // Save the file into the folder
 //            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 //            Path filePath = uploadPath.resolve(fileName);
 //            Files.copy(file.getInputStream(), filePath);
 //
-//            // تعيين مسار الملف في الكيان
+//            // Set the file path on the entity
 //            video.setFilePath(filePath.toString());
 //        }
 //        video.setCourse(course);

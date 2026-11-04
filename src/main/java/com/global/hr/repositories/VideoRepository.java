@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
-    List<Video> findByCourseId(Long courseId); // جلب كل الفيديوهات الخاصة بكورس معين
+    List<Video> findByCourseId(Long courseId); // Fetch all videos for a specific course
 }

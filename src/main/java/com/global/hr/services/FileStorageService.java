@@ -22,7 +22,7 @@ public class FileStorageService {
             return null;
         }
 
-        // إنشاء اسم فريد للملف
+        // Create a unique filename
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         Path targetLocation = this.rootLocation.resolve(fileName);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);

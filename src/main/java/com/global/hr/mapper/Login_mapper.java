@@ -6,7 +6,7 @@ import com.global.hr.models.User;
 public class Login_mapper {
 
     public static Post_Login UserToPostLogin(User user) {
-        // تحويل كائن User إلى كائن Post_Login
+        // Convert a User object to a Post_Login object
         return new Post_Login(user.getId(), user.getRole());
     }
 }

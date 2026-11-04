@@ -49,22 +49,22 @@ public class CourseController {
 
     @PostMapping("/add")
     public ResponseEntity<?> createCourse(@RequestBody CourseRequest courseRequest) {
-        // جلب الإنستراكتور من قاعدة البيانات
+        // Fetch the instructor from the database
         Instructor instructor = instructorRepository.findById(courseRequest.getInstructorId())
             .orElseThrow(() -> new RuntimeException("Instructor not found!"));
 
-        // جلب الكاتيجوري من قاعدة البيانات
+        // Fetch the category from the database
         Category category = categoryRepository.findById(courseRequest.getCategoryId())
             .orElseThrow(() -> new RuntimeException("Category not found!"));
 
-        // إنشاء الكورس
+        // Create the course
         Course course = new Course();
         course.setCourseName(courseRequest.getCourseName());
         course.setDescription(courseRequest.getDescription());
-        course.setAuthor(instructor);  // لازم نعيّن الـ Instructor هنا
+        course.setAuthor(instructor);  // We must set the Instructor here
         course.setCategory(category);
 
-        // حفظ الكورس
+        // Save the course
         courseRepository.save(course);
 
         return ResponseEntity.ok("Course created successfully!");

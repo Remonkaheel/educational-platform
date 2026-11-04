@@ -28,7 +28,7 @@ public class VideoStreamingService {
     @Value("${video.upload.dir}")
     private String uploadDir;
 
-    // الحصول على ملف الفيديو كمورد
+    // Get the video file as a resource
     public Resource getVideoAsResource(String filename) {
         try {
             Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
@@ -46,7 +46,7 @@ public class VideoStreamingService {
         }
     }
 
-    // تدفق الفيديو مع دعم الإيقاف المؤقت واستئناف التشغيل
+    // Stream the video with pause and resume support
     public byte[] streamVideoChunk(String filename, long start, long end) throws IOException {
         File file = new File(uploadDir + File.separator + filename);
         
@@ -57,22 +57,22 @@ public class VideoStreamingService {
 
         long fileSize = file.length();
         
-        // إذا كانت نهاية الملف غير محددة، استخدم حجم الملف
+        // If the file end is not specified, use the file size
         if (end <= 0) {
             end = fileSize - 1;
         }
         
-        // التحقق من صحة النطاق
+        // Validate the range
         if (start < 0 || end >= fileSize || start > end) {
             throw new ResponseStatusException(
                     HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, "Invalid range");
         }
         
-        // حساب حجم الجزء
+        // Calculate the chunk size
         long chunkSize = end - start + 1;
         byte[] buffer = new byte[(int) chunkSize];
         
-        // قراءة الجزء المطلوب من الملف
+        // Read the requested chunk from the file
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
             randomAccessFile.seek(start);
             randomAccessFile.read(buffer, 0, (int) chunkSize);
@@ -80,12 +80,12 @@ public class VideoStreamingService {
         }
     }
 
-    // الحصول على صورة مصغرة للفيديو (يمكن استخدام مكتبة مثل FFmpeg)
+    // Get a video thumbnail (a library such as FFmpeg can be used)
     public byte[] generateThumbnail(String filename) throws IOException {
-        // استخدم FFmpeg أو أي مكتبة أخرى لاستخراج صورة مصغرة من الفيديو
-        // هذا مثال بسيط - في التطبيق الفعلي ستحتاج إلى استخدام مكتبة مثل JavaCV
+        // Use FFmpeg or any other library to extract a thumbnail from the video
+        // This is a simple example - in the real application you would need to use a library such as JavaCV
         
-        // لغرض المثال، نعيد صورة افتراضية
+        // For demonstration purposes, we return a default image
         Path defaultThumbnailPath = Paths.get(uploadDir, "default-thumbnail.jpg");
         return java.nio.file.Files.readAllBytes(defaultThumbnailPath);
     }

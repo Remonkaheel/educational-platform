@@ -106,14 +106,14 @@ public class AuthController {
     
     
     
- // ✅ 1️⃣ إرسال OTP للإيميل
+ // Send OTP to the email
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDTO request) {
         forgetPasswordService.sendOTP(request.getEmail());
         return ResponseEntity.ok("OTP sent successfully to your email.");
     }
 
-    // ✅ 2️⃣ التحقق من OTP
+    // Verify OTP
     @PostMapping("/verify-otp")
     public ResponseEntity<Boolean> verifyOTP(@RequestParam String email, @RequestParam String otp) {
         boolean isValid = forgetPasswordService.verifyOTP(email, otp);
@@ -129,7 +129,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("User not found.");
         }
 
-        // تحديث كلمة المرور
+        // Update the password
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 

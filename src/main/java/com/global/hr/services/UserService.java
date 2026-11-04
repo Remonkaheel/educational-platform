@@ -82,7 +82,7 @@ public class UserService {
         System.out.println("Looking for categories: " + registerDTO.getExpertsInterests());
 
         List<Category> categories = categoryRepository.findByNameIn(registerDTO.getExpertsInterests());
-        System.out.println("Fetched Categories: " + categories); // ✅ تأكد من النتيجة
+        System.out.println("Fetched Categories: " + categories); // Check the result
 
         if (categories != null && !categories.isEmpty()) {
             user.setExpertsInterests(categories);

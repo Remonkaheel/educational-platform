@@ -1,4 +1,5 @@
 package com.global.hr.controllers;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,18 +12,22 @@ import java.util.Enumeration;
 @RestController
 public class FtpConnectionController {
 
+    @Value("${ftp.host:localhost}")
+    private String ftpHost;
+
+    @Value("${ftp.username:}")
+    private String ftpUsername;
+
+    @Value("${ftp.password:}")
+    private String ftpPassword;
+
+    @Value("${ftp.port:2121}")
+    private int ftpPort;
+
     @GetMapping("/ftp/connection-details")
     public FtpConnectionDetails getFtpConnectionDetails() {
-        // Get the server's IPv4 address
-        String ipAddress = "156.201.165.84";
-        
-        // FTP connection details
-        String username = "ftpuser";  // Example username
-        String password = "ftppassword";  // Example password
-        int port = 21;  // Default FTP port
-
-        // Return the server details including the IP, username, password, and port
-        return new FtpConnectionDetails(ipAddress, username, password, port);
+        // FTP connection details come from the configuration (see application.properties)
+        return new FtpConnectionDetails(ftpHost, ftpUsername, ftpPassword, ftpPort);
     }
 
     // Method to retrieve the server's IPv4 address
@@ -174,7 +179,7 @@ public class FtpConnectionController {
 //    @Autowired
 //    private VideoStreamingService videoStreamingService;
 //
-//    // رفع الفيديو (للمدرسين فقط)
+//    // Upload the video (instructors only)
 //   // @PreAuthorize("hasRole('INSTRUCTOR')")
 //    @PostMapping("/upload")
 //    public ResponseEntity<Video> uploadVideo(
@@ -192,14 +197,14 @@ public class FtpConnectionController {
 //        }
 //    }
 //
-//    // تدفق الفيديو مع دعم الإيقاف المؤقت واستئناف التشغيل
+//    // Stream the video with pause and resume support
 //    @GetMapping("/stream/{filename}")
 //    public ResponseEntity<byte[]> streamVideo(
 //            @PathVariable String filename,
 //            @RequestHeader(value = "Range", required = false) String rangeHeader
 //    ) {
 //        try {
-//            // تحليل رأس Range إذا كان موجوداً
+//            // Parse the Range header if present
 //            long start = 0;
 //            long end = 0;
 //            
@@ -212,19 +217,19 @@ public class FtpConnectionController {
 //                }
 //            }
 //            
-//            // الحصول على معلومات الملف
+//            // Get the file information
 //            Resource videoResource = videoStreamingService.getVideoAsResource(filename);
 //            long fileSize = videoResource.contentLength();
 //            
-//            // إذا لم يتم تحديد النهاية، استخدم حجم الملف
+//            // If the end is not specified, use the file size
 //            if (end <= 0) {
 //                end = fileSize - 1;
 //            }
 //            
-//            // قراءة الجزء المطلوب من الفيديو
+//            // Read the requested chunk of the video
 //            byte[] data = videoStreamingService.streamVideoChunk(filename, start, end);
 //            
-//            // بناء الاستجابة
+//            // Build the response
 //            HttpHeaders headers = new HttpHeaders();
 //            headers.add("Content-Range", String.format("bytes %d-%d/%d", start, end, fileSize));
 //            headers.add("Accept-Ranges", "bytes");
@@ -238,7 +243,7 @@ public class FtpConnectionController {
 //        }
 //    }
 //
-//    // الحصول على صورة مصغرة للفيديو
+//    // Get a video thumbnail
 //    @GetMapping("/thumbnail/{filename}")
 //    public ResponseEntity<byte[]> getVideoThumbnail(@PathVariable String filename) {
 //        try {
@@ -254,7 +259,7 @@ public class FtpConnectionController {
 //        }
 //    }
 //
-//    // الحصول على معلومات الفيديو
+//    // Get the video information
 //    @GetMapping("/{id}/info")
 //    public ResponseEntity<VideoService.VideoInfo> getVideoInfo(@PathVariable Long id) {
 //        try {

@@ -16,10 +16,10 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    // ✅ Endpoint لجلب بيانات البروفايل
+    // Endpoint to fetch profile data
     @GetMapping("/profile")
     public ProfileResponse getProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        // الحصول على الإيميل من المستخدم المسجل حاليًا
+        // Get the email of the currently logged-in user
         String email = userDetails.getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
