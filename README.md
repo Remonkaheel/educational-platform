@@ -191,4 +191,11 @@ Reminders for deployment:
 
 ## Author
 
+**Remon Kaheel** — Software Engineer, Backend Developer (Java / Spring Boot)
+
+- Email: oremoo97@gmail.com
+- LinkedIn: [remon-kaheel](https://www.linkedin.com/in/remon-kaheel-52b025264/)
 - GitHub: [@Remonkaheel](https://github.com/Remonkaheel)
+
+B.Sc. in Computer Science — Faculty of Computer Science and Artificial Intelligence,
+Banha University (2021 – 2025).
